@@ -6,6 +6,8 @@ const leadSchema = new mongoose.Schema({
   teamMember: { type: String, required: true },
   status: { type: String, required: true },
   remarks: { type: String },
+  imageUrl: { type: String }, // 🌐 Cloudinary secure URL
+  imagePublicId: { type: String }, // 🆔 Cloudinary public_id
 }, { timestamps: true })
 
 module.exports = mongoose.model("Lead", leadSchema)
