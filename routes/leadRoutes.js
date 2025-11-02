@@ -10,4 +10,4 @@ router.delete("/deleteLead/:id", deleteLead)
 router.delete("/deleteLeadImage/:id", deleteLeadImage)
 router.put("/uploadImage/:id", uploadLeadImage)
 
-module.exports = router
+module.exports = router 

@@ -108,15 +108,47 @@ const addLead = async (req, res) => {
   }
 }
 
-// Fetch all leads
 const fetchLeads = async (req, res) => {
-  try {
-    const leads = await Lead.find().sort({ createdAt: -1 })
-    res.json(leads)
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching leads", error: error.message })
+  const { month } = req.query;  // Get month from query parameter
+
+  if (month) {
+    // Map of months to their start date
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Find the index of the selected month
+    const monthIndex = months.indexOf(month);
+
+    if (monthIndex === -1) {
+      return res.status(400).json({ message: "Invalid month" });
+    }
+
+    // Set the start and end date for the given month
+    const startDate = new Date(new Date().getFullYear(), monthIndex, 1);  // First day of the month
+    const endDate = new Date(new Date().getFullYear(), monthIndex + 1, 0); // Last day of the month
+
+    try {
+      const leads = await Lead.find({
+        createdAt: { $gte: startDate, $lt: endDate }
+      }).sort({ createdAt: -1 });
+
+      res.json(leads);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching leads", error: error.message });
+    }
+  } else {
+    // If no month is provided, fetch all leads
+    try {
+      const leads = await Lead.find().sort({ createdAt: -1 });
+      res.json(leads);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching leads", error: error.message });
+    }
   }
-}
+};
+
 
 const updateLead = async (req, res) => {
   try {
